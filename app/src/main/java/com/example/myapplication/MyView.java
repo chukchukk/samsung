@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,85 +8,108 @@ import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.view.View;
 
-
+@SuppressLint("DrawAllocation")
 public class MyView extends View {
+    int N = 5;
+    int[] x = new int[N];
+    int[] y = new int[N];
+    int[] vx = new int[N];
+    int[] vy = new int[N];
+    int[] L = new int[N];
+    int[] Red = new int[N];
+    int[] Green = new int[N];
+    int[] Blue = new int[N];
+    int[] R = new int[N];
+    int z = -1;
+    double a = 0, ha = Math.PI / 180;
 
-    int N = 15;
-    int[] l = new int [N];
-    double x0, y0;
-    double[] x = new double [N];
-    double[] y = new double [N];
-    double g = 9.832f, pi = Math.PI;
-    double[] w = new double[N];
-    double fi0;
-    double[] fi = new double[N];
-    int t = 0, deltaT = 1;
-
-    void makePendulum()
-    {
-        fi0 = pi/4;
-
-        int l_min = 100;
-        for (int i = 0; i<N; i++)
-        {
-            l[i] = l_min;
-            l_min += 50;
-
-            w[i] = Math.sqrt(g/l[i]);
+    void fillArrayRandom(int[] a, int min, int max) {
+        for (int i = 0; i < a.length; i++) {
+            a[i] = (int) (Math.random() * (max - min + 1)) + min;
         }
     }
-    void movePendulum()
-    {
-        t += deltaT;
 
-        for (int i = 0; i<N; i++)
-        {
-            fi[i] = fi0 * Math.cos(w[i] * t);
-            x[i] = l[i]*Math.sin(fi[i]);
-            y[i] = l[i]*Math.cos(fi[i]);
+    void makeBalls() {
+        fillArrayRandom(x, 50, 250);
+        fillArrayRandom(y, 50, 250);
+        fillArrayRandom(vx, -50, 100);
+        fillArrayRandom(vy, -50, 100);
+        fillArrayRandom(L, 3, 10);
+        fillArrayRandom(Red, 50, 255);
+        fillArrayRandom(Green, 50, 255);
+        fillArrayRandom(Blue, 50, 255);
+        fillArrayRandom(R, 20, 40);
+    }
+
+    void moveBalls() {
+        for (int i = 0; i < N; i++) {
+            if (y[i] < 0 || y[i] > this.getHeight()){
+                vy[i] = - vy[i];
+            }
+            if (x[i] < 0 || x[i] > this.getHeight()){
+                vx[i] = - vx[i];
+            }
+            if (x[i] < 0 || x[i] > this.getHeight()){
+                vx[i] = - vx[i];
+            }
+            if (i % 2 == 0) {
+                x[i] = this.getWidth() / 2 + (int) (L[i] * vx[i] * Math.cos(a));
+                y[i] = this.getHeight() / 2 + (int) (z * L[i] * vy[i] * Math.sin(a));
+            } else {
+                x[i] = this.getWidth() / 2 + (int) (L[i] * vx[i] * Math.cos(a));
+                y[i] = this.getHeight() / 2 + (int) (L[i] * vy[i] * Math.sin(a));
+            }
         }
+        a = a + ha;
+
     }
 
     MyView(Context context) {
         super(context);
-        makePendulum();
+        makeBalls();
         MyTimer timer = new MyTimer();
         timer.start();
     }
 
+
     @Override
+
     protected void onDraw(Canvas canvas) {
-        x0 = getWidth()/2;
-        y0 = getHeight()/4;
         Paint paint = new Paint();
-        canvas.drawCircle((float) x0, (float) y0, 10, paint);
-        for (int i = 0; i<N; i++)
-        {
-            paint.setColor(Color.BLUE);
-            canvas.drawLine((float)x0, (float)y0, (float)(x[i] + x0), (float)(y[i]+ y0), paint);
-            paint.setColor(Color.RED);
-            canvas.drawCircle((float)(x[i] + x0), (float)(y[i] + y0), 20, paint);
+        for (int i = 0; i < N - 1; i++) {
+
+            canvas.drawLine(x[i], y[i], x[i + 1], y[i + 1], paint);
+
+        }
+        paint.setColor(Color.RED);
+        canvas.drawCircle(this.getWidth() / 2, this.getHeight() / 2, 70, paint);
+        paint.setStyle(Paint.Style.FILL);
+        for (int i = 0; i < N; i++) {
+            paint.setColor(Color.argb(200, Red[i], Green[i], Blue[i]));
+            canvas.drawCircle(x[i], y[i], R[i], paint);
+            paint.setTextSize(30.0f);
+            paint.setColor(Color.BLACK);
+            canvas.drawText("P " + i + " (" + x[i] + ", " + y[i] + ")", x[i] + 10, y[i] - 15, paint);
         }
     }
-
-    void nextFrame()
-    {
-        movePendulum();
+    void nextFrame() {
+        moveBalls();
         invalidate();
     }
-
-    class MyTimer extends CountDownTimer
-    {
-        MyTimer()
-        {
-            super(100000, 100);
+    class MyTimer extends CountDownTimer {
+        MyTimer() {
+            super(1000000, 1);
         }
         @Override
         public void onTick(long millisUntilFinished) {
+            // TODO Auto-generated method stub
             nextFrame();
         }
         @Override
         public void onFinish() {
+            // TODO Auto-generated method stub
         }
     }
 }
+
+
