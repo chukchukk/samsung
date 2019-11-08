@@ -9,6 +9,7 @@ import android.view.View;
 
 
 public class MyView extends View {
+    Paint paint = new Paint();
     int N = 10; // количество шариков
     float[] x  = new float[N];
     float[] y  = new float[N];
@@ -30,16 +31,8 @@ public class MyView extends View {
     @Override
 
     protected void onDraw(Canvas canvas) {
-        Paint paint = new Paint();
-        for (int i = 0; i < N - 1; i++) {
 
-            canvas.drawLine(x[i], y[i], x[i + 1], y[i + 1], paint);
-
-        }
-        for (int i = 0; i < N; i++) {
-            paint.setColor(Color.rgb((int)col[i]+23,(int)col[i]+50,(int)col[i]-15));
-            canvas.drawCircle(x[i], y[i], rad[i], paint);
-        }
+        drawBalls(canvas);
         for(int i=0;i<N;i++)
         {
             moveballs(x,i);
@@ -78,6 +71,18 @@ public class MyView extends View {
     void add(float[] array , float[] values){
         for (int i = 0; i < array.length; i++){
             array[i] += values[i];
+        }
+    }
+    void drawBalls(Canvas canvas)
+    {
+        for (int i = 0; i < N - 1; i++) {
+
+            canvas.drawLine(x[i], y[i], x[i + 1], y[i + 1], paint);
+
+        }
+        for (int i = 0; i < N; i++) {
+            paint.setColor(Color.rgb((int)col[i]+23,(int)col[i]+50,(int)col[i]-15));
+            canvas.drawCircle(x[i], y[i], rad[i], paint);
         }
     }
 }
