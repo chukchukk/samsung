@@ -1,76 +1,34 @@
 package com.example.myapplication;
 
-import android.annotation.SuppressLint;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.CountDownTimer;
 import android.view.View;
 
-@SuppressLint("DrawAllocation")
+
 public class MyView extends View {
-    int N = 5;
-    int[] x = new int[N];
-    int[] y = new int[N];
-    int[] vx = new int[N];
-    int[] vy = new int[N];
-    int[] L = new int[N];
-    int[] Red = new int[N];
-    int[] Green = new int[N];
-    int[] Blue = new int[N];
-    int[] R = new int[N];
-    int z = -1;
-    double a = 0, ha = Math.PI / 180;
+    int N = 10; // количество шариков
+    float[] x  = new float[N];
+    float[] y  = new float[N];
+    float[] vx = new float[N];
+    float[] vy = new float[N];
+    float[] rad=new float[N];
+    int [] col=new int[N];
 
-    void fillArrayRandom(int[] a, int min, int max) {
-        for (int i = 0; i < a.length; i++) {
-            a[i] = (int) (Math.random() * (max - min + 1)) + min;
-        }
-    }
-
-    void makeBalls() {
-        fillArrayRandom(x, 50, 250);
-        fillArrayRandom(y, 50, 250);
-        fillArrayRandom(vx, -50, 100);
-        fillArrayRandom(vy, -50, 100);
-        fillArrayRandom(L, 3, 10);
-        fillArrayRandom(Red, 50, 255);
-        fillArrayRandom(Green, 50, 255);
-        fillArrayRandom(Blue, 50, 255);
-        fillArrayRandom(R, 20, 40);
-    }
-
-    void moveBalls() {
-        for (int i = 0; i < N; i++) {
-            if (y[i] < 0 || y[i] > this.getHeight()){
-                vy[i] = - vy[i];
-            }
-            if (x[i] < 0 || x[i] > this.getHeight()){
-                vx[i] = - vx[i];
-            }
-            if (x[i] < 0 || x[i] > this.getHeight()){
-                vx[i] = - vx[i];
-            }
-            if (i % 2 == 0) {
-                x[i] = this.getWidth() / 2 + (int) (L[i] * vx[i] * Math.cos(a));
-                y[i] = this.getHeight() / 2 + (int) (z * L[i] * vy[i] * Math.sin(a));
-            } else {
-                x[i] = this.getWidth() / 2 + (int) (L[i] * vx[i] * Math.cos(a));
-                y[i] = this.getHeight() / 2 + (int) (L[i] * vy[i] * Math.sin(a));
-            }
-        }
-        a = a + ha;
-
-    }
-
-    MyView(Context context) {
+    public MyView(Context context) {
         super(context);
-        makeBalls();
-        MyTimer timer = new MyTimer();
-        timer.start();
-    }
+        for (int i = 0; i < N; i++){
+            x[i] = (float)(Math.random() * 500);
+            y[i] = (float)(Math.random() * 500);
+            vx[i] = (float)(Math.random() * 6 - 3);
+            vy[i] = (float)(Math.random() * 6 - 2);
+            rad[i]=(float)(Math.random() * 20 + 40);
+            col[i]=(int)(Math.random() * 15 + 150);
 
+        }
+    }
 
     @Override
 
@@ -81,35 +39,42 @@ public class MyView extends View {
             canvas.drawLine(x[i], y[i], x[i + 1], y[i + 1], paint);
 
         }
-        paint.setColor(Color.RED);
-        canvas.drawCircle(this.getWidth() / 2, this.getHeight() / 2, 70, paint);
-        paint.setStyle(Paint.Style.FILL);
         for (int i = 0; i < N; i++) {
-            paint.setColor(Color.argb(200, Red[i], Green[i], Blue[i]));
-            canvas.drawCircle(x[i], y[i], R[i], paint);
-            paint.setTextSize(30.0f);
-            paint.setColor(Color.BLACK);
-            canvas.drawText("P " + i + " (" + x[i] + ", " + y[i] + ")", x[i] + 10, y[i] - 15, paint);
+            paint.setColor(Color.rgb(col[i]+23,col[i]+(int)x[i],col[i]-15));
+            canvas.drawCircle(x[i], y[i], rad[i], paint);
         }
-    }
-    void nextFrame() {
-        moveBalls();
+
+        for (int i = 0; i < N; i++)
+        {
+            moveballs(x,i);
+            x[i] += vx[i];
+            moveballsy(y,i);
+            y[i] += vy[i];
+
+        }
         invalidate();
     }
-    class MyTimer extends CountDownTimer {
-        MyTimer() {
-            super(1000000, 1);
+    void moveballs(float []x,int i )
+    {
+        if (x[i] < 0+rad[i] || x[i] > this.getWidth()-rad[i])
+        {
+            vx[i] = - vx[i];
+          //  rad[i]+=10;
+
         }
-        @Override
-        public void onTick(long millisUntilFinished) {
-            // TODO Auto-generated method stub
-            nextFrame();
+
+    }
+    void moveballsy(float []y,int i )
+    {
+        if (y[i] < 0+rad[i] || y[i] > this.getHeight()-rad[i])
+        {
+            vy[i] = - vy[i];
+            //rad[i]+=5;
+
         }
-        @Override
-        public void onFinish() {
-            // TODO Auto-generated method stub
-        }
+
     }
 }
+
 
 
