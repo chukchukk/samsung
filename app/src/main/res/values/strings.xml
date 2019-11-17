@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cells</string>
+    <string name="app_name">My Application</string>
+    <string name="title">Решить уравнение a*x^2+b*x+c=0 </string>
+    <string name="a">Введите a</string>
+    <string name="b">Введите b</string>
+    <string name="c">Введите c</string>
+    <string name="calculate">Вычислить</string>
 </resources>

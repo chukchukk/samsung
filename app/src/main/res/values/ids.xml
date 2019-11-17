@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="CellsLayout" type="id" />
+    <item name="coefficient_a" type="id" />
+    <item name="coefficient_b" type="id" />
+    <item name="coefficient_c" type="id" />
+    <item name="result" type="id" />
+    <item name="Result" type="id" />
 </resources>
